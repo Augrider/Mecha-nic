@@ -1,2 +1,2 @@
 # Mecha-nic
-Please, do not redact or use everything here without my approval.
+Короче, изначально только я и Бог знали, что будет делать эта программа, теперь знает только Бог
