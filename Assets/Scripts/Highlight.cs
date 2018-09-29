@@ -30,8 +30,8 @@ public class Highlight : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (Managers.trajectory._isChanged) {
-			int end = Managers.trajectory.trace.Count-1;
-			Managers.trajectory.Highlight (_line, end);
+			int last = Managers.trajectory.trajectories.Count-1;
+			Managers.trajectory.Highlight (_line, last);
 		}
 		if (_line.positionCount > 0 && Managers.trajectory._isHighlighted==false)
 			StartCoroutine (LightsOff());

@@ -5,7 +5,7 @@ using UnityEngine;
 public class ButtonBlink : MonoBehaviour {
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		Messenger.AddListener (GameEvent.Start_Turn, ObjectOff);
 		Messenger.AddListener (GameEvent.End_Turn, ObjectOn);
 	}

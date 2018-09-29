@@ -9,7 +9,7 @@ public class Timer : MonoBehaviour {
 	[SerializeField] private Text timerTotal;
 	[SerializeField] private Text Turn;
 
-	public bool isActive;
+	private bool isActive;
 	public float tim;
 	public float tim2;
 	private int turn;
@@ -19,14 +19,18 @@ public class Timer : MonoBehaviour {
 		tim = 0;
 		tim2 = 0;
 		turn = 1;
+
+		Turn.text = "Turn " + turn.ToString ();
 	}
 
 	void Awake () {
 		Messenger.AddListener (GameEvent.Start_Turn, TimerStart);
+		Messenger.AddListener (GameEvent.End_Turn, TimerStop);
 	}
 		
 	void OnDestroy() {
 		Messenger.RemoveListener (GameEvent.Start_Turn, TimerStart);
+		Messenger.RemoveListener (GameEvent.End_Turn, TimerStop);
 	}
 
 	// Update is called once per frame
@@ -38,20 +42,23 @@ public class Timer : MonoBehaviour {
 			timerTotal.text = tim2.ToString ();
 			if (tim >= 5.0f) {
 				Messenger.Broadcast (GameEvent.End_Turn);
-				tim = 0;
-				timer.text = tim.ToString () + ".00";
-				tim2 = 5.0f * turn;
-				timerTotal.text = tim2.ToString () + ".00";
-				isActive = false;
-				turn += 1;
-				Turn.text = "Turn " + turn.ToString ();
-				Managers.movement.ClearAll();
 			}
 		}
 	}
 
 	void TimerStart() {
 		isActive = true;
+	}
+
+	void TimerStop() {
+		isActive = false;
+		tim = 0.0f;
+		tim2 = 5.0f * turn;
+		turn++;
+
+		timer.text = tim.ToString () + ".00";
+		timerTotal.text = tim2.ToString () + ".00";
+		Turn.text = "Turn " + turn.ToString ();
 	}
 		
 }

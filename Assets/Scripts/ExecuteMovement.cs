@@ -27,7 +27,6 @@ public class ExecuteMovement : MonoBehaviour {
 
 	public void Deexecute(){
 		StopCoroutine (Execution());
-		//isStopped = true;
 		Managers.trajectory.ClearAll ();
 		Managers.movement.ClearAll ();
 	}
@@ -48,14 +47,6 @@ public class ExecuteMovement : MonoBehaviour {
 				yield return null;
 			}
 			count++;
-		}
-		/*
-		 * Временное окончание хода 
-		 * Условие: конец пути (path)
-		 * TODO: УДАЛИТЬ НАХЕР
-		*/
-		if (count >= Managers.movement._moves.Count) {
-			Messenger.Broadcast (GameEvent.End_Turn);
 		}
 		yield break;
 	}

@@ -9,13 +9,13 @@ public class Freeze : MonoBehaviour {
 	private NavMeshAgent agent;
 
 	void Awake () {
-		Messenger.AddListener (GameEvent.Start_Turn, Unfreeze);
-		Messenger.AddListener (GameEvent.End_Turn, StopHere);
+		Messenger.AddListener (GameEvent.Start_Turn, unFreeze);
+		Messenger.AddListener (GameEvent.End_Turn, freeze);
 	}
 
 	void OnDestroy() {
-		Messenger.RemoveListener (GameEvent.Start_Turn, Unfreeze);
-		Messenger.RemoveListener (GameEvent.End_Turn, StopHere);
+		Messenger.RemoveListener (GameEvent.Start_Turn, unFreeze);
+		Messenger.RemoveListener (GameEvent.End_Turn, freeze);
 	}
 
 	void Start(){
@@ -23,12 +23,12 @@ public class Freeze : MonoBehaviour {
 		agent = GetComponent<NavMeshAgent> ();
 	}
 
-	void Unfreeze(){
+	void unFreeze(){
 		body.constraints = RigidbodyConstraints.None;
 		//agent.isStopped = false;
 	}
 
-	void StopHere(){
+	void freeze(){
 		//agent.isStopped = true;
 		agent.SetDestination (agent.transform.position);
 		body.constraints = RigidbodyConstraints.FreezeAll;

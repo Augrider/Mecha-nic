@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Liner : MonoBehaviour {
+public class Pointer : MonoBehaviour {
 
 	public int MyId;
 
 	// Use this for initialization
-	void OnEnable () {
-		MyId = Managers.trajectory.id;
+	void Awake () {
+		MyId = Managers.trajectory.id - 1;
 	}
 }
