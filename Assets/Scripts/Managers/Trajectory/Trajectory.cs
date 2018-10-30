@@ -12,9 +12,6 @@ public class Trajectory : MonoBehaviour, IGameManager {
 	public bool _isChanged;
 	public bool _isHighlighted;
 
-	[SerializeField] private GameObject _point;
-	[SerializeField] private GameObject _Liner;
-
 	public void Startup() {
 		Debug.Log ("Trajectory Manager starting... ");
 		trajectories = new List<Vector3[]>();
@@ -34,14 +31,7 @@ public class Trajectory : MonoBehaviour, IGameManager {
 	public void AddCommand(Vector3[] pathos){
 		int last = pathos.Length - 1;
 		Vector3 pointPos = new Vector3 (pathos [last].x, pathos [last].y + 3.0f, pathos [last].z);
-		if (id == Managers.cache.quantity) {
-			GameObject point = Instantiate (_point, pointPos, Quaternion.identity);
-			GameObject liner = Instantiate (_Liner, new Vector3 (0, 3, 0), Quaternion.identity);
-			LineRenderer line = liner.GetComponent<LineRenderer> ();
-			Managers.cache.AddToCache (line, point);
-		} else {
-			Managers.cache.Enable (id, pointPos);
-		}
+		Managers.cache.CacheCheck(id, pointPos);
 		trajectories.Add (pathos);
 		id++;
 		StartCoroutine (isChange ());
@@ -51,7 +41,7 @@ public class Trajectory : MonoBehaviour, IGameManager {
 		Mesh mesh = new Mesh ();
 		LineRenderer liner;
 		for (int i=0; i<trajectories.Count; i++) {
-			liner = Managers.cache._cache [i].liner;
+			liner = Managers.cache._cache[i].liner;
 			liner.useWorldSpace = false;
 			liner.positionCount = trajectories[i].Length;
 			liner.SetPositions (trajectories[i]);
@@ -90,4 +80,9 @@ public class Trajectory : MonoBehaviour, IGameManager {
 		id = 0;
 	}
 
+	public void DrawCurrent(Vector3[] points, LineRenderer line){
+		line.useWorldSpace = false;
+		line.positionCount = points.Length;
+		line.SetPositions (points);
+	}
 }

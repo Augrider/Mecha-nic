@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
-public class Walk : MovementMethod {
+public class Walk : MonoBehaviour {
 
 	private int LayerMask = 1 << 10;
 	private RaycastHit Hit;
+
 	/*
 	 * Функция задания в массив (будет в каждом методе движения) 
 	*/
@@ -25,5 +27,10 @@ public class Walk : MovementMethod {
 	*/
 	public void Realization(NavMeshAgent agent, Vector3 destination) {
 		agent.SetDestination (destination);
+	}
+
+	public void OnClick(){
+		Assign(ControllableCharacter.pathfinder, CWheel.wheelPos);
+		CWheel.Reset();
 	}
 }

@@ -11,7 +11,7 @@ public class BasicState : MCtrlState{
 				MovementMethod.walk.Assign(ControllableCharacter.pathfinder, MPos);
 				Left.clickCount = 0;
 			}
-			CWheel.wheel.transform.position = new Vector3 (-100, 0, 0);
+			CWheel.Reset();
 //			Left.clickCount = 0;
 		}
 		if(Input.GetMouseButtonDown(1)){

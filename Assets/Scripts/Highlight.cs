@@ -8,25 +8,8 @@ public class Highlight : MonoBehaviour {
 
 	// Use this for initialization
 	void Awake () {
-		Messenger.AddListener (GameEvent.Start_Turn, OnStartTurn);
-		Messenger.AddListener (GameEvent.End_Turn, OnEndTurn);
 		_line = this.gameObject.GetComponent<LineRenderer> ();
-	}
-
-	// Update is called once per frame
-	void OnDestroy() {
-		Messenger.RemoveListener (GameEvent.Start_Turn, OnStartTurn);
-		Messenger.RemoveListener (GameEvent.End_Turn, OnEndTurn);
-	}
-		
-	private void OnStartTurn() {
-		this.gameObject.SetActive (false);
-	}
-
-	private void OnEndTurn() {
-		this.gameObject.SetActive (true);
-	}
-		
+	}		
 	// Update is called once per frame
 	void Update () {
 		if (Managers.trajectory._isChanged) {

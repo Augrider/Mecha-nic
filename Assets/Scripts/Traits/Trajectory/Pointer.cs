@@ -7,7 +7,7 @@ public class Pointer : MonoBehaviour {
 	public int MyId;
 
 	// Use this for initialization
-	void Awake () {
-		MyId = Managers.trajectory.id - 1;
+	void OnEnable () {
+		MyId = Managers.trajectory.id;
 	}
 }

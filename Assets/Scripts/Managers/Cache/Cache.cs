@@ -9,6 +9,9 @@ public class Cache : MonoBehaviour, IGameManager {
 	public List<Cached> _cache;
 	public int quantity;
 
+	[SerializeField] private GameObject _point;
+	[SerializeField] private GameObject _Liner;
+
 	public void Startup() {
 		Debug.Log ("Cache Manager starting... ");
 		_cache = new List<Cached> ();
@@ -28,5 +31,18 @@ public class Cache : MonoBehaviour, IGameManager {
 		_cache [id].liner.gameObject.SetActive (true);
 		_cache [id].point.SetActive (true);
 		_cache [id].point.transform.position = pointPos;
+	}
+
+	public void CacheCheck(int id, Vector3 pointPos){
+		if (id == Managers.cache.quantity) {
+			GameObject point = Instantiate (_point, pointPos, Quaternion.identity);
+			GameObject liner = Instantiate (_Liner, new Vector3 (0, 3, 0), Quaternion.identity);
+			point.transform.parent = this.gameObject.transform;
+			liner.transform.parent = this.gameObject.transform;
+			LineRenderer line = liner.GetComponent<LineRenderer> ();
+			AddToCache (line, point);
+		} else {
+			Enable (id, pointPos);
+		}
 	}
 }
