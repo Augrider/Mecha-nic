@@ -1,88 +1,77 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+using MoreLinq;
 
 public class Trajectory : MonoBehaviour, IGameManager {
 
 	public ManagerStatus status { get; private set; }
 
 	public int id;
-
-	public List<Vector3[]> trajectories;
-	public bool _isChanged;
-	public bool _isHighlighted;
+	[SerializeField]private float defaultBounds;
 
 	public void Startup() {
 		Debug.Log ("Trajectory Manager starting... ");
-		trajectories = new List<Vector3[]>();
-		_isChanged = false;
-		_isHighlighted = false;
-		id = 0;
 		status = ManagerStatus.Started;
 	}
 		
-	private IEnumerator isChange (){
-		_isChanged = true;
-		yield return new WaitForSeconds(0.5f);
-		_isChanged = false;
-		yield break;
-	}
-		
-	public void AddCommand(Vector3[] pathos){
+	public void AddCommand(int playerId, Vector3[] pathos){
 		int last = pathos.Length - 1;
-		Vector3 pointPos = new Vector3 (pathos [last].x, pathos [last].y + 3.0f, pathos [last].z);
-		Managers.cache.CacheCheck(id, pointPos);
-		trajectories.Add (pathos);
-		id++;
-		StartCoroutine (isChange ());
+		Vector3 pointPos = pathos[last];
+		Managers.cache.CacheCheck(playerId, Managers.spawn._chars[playerId].charCon.id, pointPos);
+		Managers.spawn._chars[playerId].charCon.trajectories.Add (pathos);
+		Managers.spawn._chars[playerId].charCon.id++;
 	}
 
-	public void ReDraw(){
+	public void ReDraw(int playerId){
 		Mesh mesh = new Mesh ();
 		LineRenderer liner;
-		for (int i=0; i<trajectories.Count; i++) {
+		for (int i=0; i<Managers.spawn._chars[playerId].charCon.trajectories.Count; i++) {
 			liner = Managers.cache._cache[i].liner;
 			liner.useWorldSpace = false;
-			liner.positionCount = trajectories[i].Length;
-			liner.SetPositions (trajectories[i]);
+			liner.positionCount = Managers.spawn._chars[playerId].charCon.trajectories[i].Length;
+			liner.SetPositions (Managers.spawn._chars[playerId].charCon.trajectories[i]);
 			liner.BakeMesh (mesh, false);
 			MeshCollider col = liner.gameObject.GetComponent<MeshCollider> ();
 			col.sharedMesh = mesh;
 		}
 	}
 
-	//Найти уточнение положения
-	public Vector3 FindPoint (int id, Vector3 point){
+	//Найти уточнение положения точки на линии
+	public Vector3 FindPointOnLine (Vector3[] path, Vector3 point){
 		int i = 0;
-		int count = trajectories[id].Length;
-		for (int k=0; k<count-1; k++) {
-			if ((((point.x - trajectories[id][i].x) / Mathf.Abs(point.x - trajectories[id][i].x)) * ((point.x - trajectories[id][i + 1].x) / Mathf.Abs (point.x - trajectories[id][i + 1].x)))>0.0) {
-				i++;
+		int j = 0;
+		int count = path.Length;
+		var closestPoint = path.MinBy(t=>Vector3.SqrMagnitude(t-point));
+		for(i=0; i<count; i++){
+			if (path[i] == closestPoint)
+				break;
+		}
+		if(i==0){
+			j = 1;
+		} else if(i==count-1){
+			j = count - 2;
+		} else {
+			if (Vector3.Dot(point - path[i], path[i - 1] - path[i]) > 0.0f) {
+				j = i - 1;
+			} else if (Vector3.Dot(point - path[i], path[i + 1] - path[i]) > 0.0f) {
+				j = i + 1;
+			} else {
+				return closestPoint;
 			}
 		}
-		if (trajectories[id][i].x < trajectories[id][i + 1].x) {
-			float otn = (point.x - trajectories[id][i].x) / (trajectories[id][i + 1].x - trajectories[id][i].x);
-			return new Vector3 (point.x, trajectories[id][i].y + (trajectories[id][i + 1].y - trajectories[id][i].y) * otn, trajectories[id][i].z + (trajectories[id][i + 1].z - trajectories[id][i].z) * otn);
-		} else {
-			float otn = (point.x - trajectories[id][i + 1].x) / (trajectories[id][i].x - trajectories[id][i + 1].x);
-			return new Vector3 (point.x, trajectories[id][i + 1].y + (trajectories[id][i].y - trajectories[id][i + 1].y) * otn, trajectories[id][i + 1].z + (trajectories[id][i].z - trajectories[id][i + 1].z) * otn);
-		}
-	}
-
-	public void Highlight (LineRenderer line, int id){
-		line.useWorldSpace = false;
-		line.positionCount = trajectories[id].Length;
-		line.SetPositions (trajectories[id]);
+		Vector3 pointA = point - path[i];
+		Vector3 lineDir = (path[j] - path[i]).normalized;
+		Vector3 result = path[i] + lineDir * Vector3.Dot(lineDir, pointA);
+		if (Vector3.SqrMagnitude(point-path[0])<=defaultBounds*defaultBounds)
+			return path[0];
+		else if (Vector3.SqrMagnitude(point-path[count-1])<=defaultBounds*defaultBounds)
+			return path[count-1];
+		else return result;
 	}
 		
-	public void ClearAll(){
-		trajectories.Clear ();
-		id = 0;
-	}
-
-	public void DrawCurrent(Vector3[] points, LineRenderer line){
-		line.useWorldSpace = false;
-		line.positionCount = points.Length;
-		line.SetPositions (points);
+	public void ClearAll(int playerId){
+		Managers.spawn._chars[playerId].charCon.trajectories.Clear ();
 	}
 }

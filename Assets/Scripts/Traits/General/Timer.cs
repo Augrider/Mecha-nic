@@ -38,8 +38,10 @@ public class Timer : MonoBehaviour {
 			tim2 += Time.deltaTime;
 			timer.text = tim.ToString ("#.00");
 			timerTotal.text = tim2.ToString ("#.00");
-			if (tim >= 5.0f) {
+			if (tim >= 5.0f) {				
 				Messenger.Broadcast (GameEvent.End_Turn);
+				Controllers.mouse.stateBasic();
+				Controllers.elements.MoveDown();
 				isActive = false;
 				tim = 0.0f;
 				tim2 = 5.0f * turn;
@@ -53,6 +55,8 @@ public class Timer : MonoBehaviour {
 	}
 
 	void TimerStart() {
+		Controllers.elements.MoveUp();
+		Controllers.mouse.stateIdle();
 		isActive = true;
 	}		
 }

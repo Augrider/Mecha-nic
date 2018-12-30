@@ -12,6 +12,7 @@ public class Managers : MonoBehaviour {
 	public static Movement movement { get; private set; }
 	public static Trajectory trajectory { get; private set; }
 	public static Cache cache { get; private set; }
+	public static Spawner spawn { get; private set; }
 
 	private List<IGameManager> _startSequence;
 
@@ -19,11 +20,13 @@ public class Managers : MonoBehaviour {
 		movement = GetComponent<Movement> ();
 		trajectory = GetComponent<Trajectory> ();
 		cache = GetComponent<Cache> ();
+		spawn = GetComponent<Spawner>();
 
 		_startSequence = new List<IGameManager> ();
 		_startSequence.Add (movement);
 		_startSequence.Add (trajectory);
 		_startSequence.Add (cache);
+		_startSequence.Add (spawn);
 
 		StartCoroutine (StartupManagers ());
 	}

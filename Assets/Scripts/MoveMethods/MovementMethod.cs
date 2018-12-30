@@ -7,8 +7,10 @@ using UnityEngine;
 public class MovementMethod : MonoBehaviour{
 
 	public static Walk walk;
+	public static Jump jump;
 
 	void Awake() {
 		walk = GetComponent<Walk>();
+		jump = GetComponent<Jump>();
 	}
 }

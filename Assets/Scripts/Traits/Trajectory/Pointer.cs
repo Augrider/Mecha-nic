@@ -4,10 +4,6 @@ using UnityEngine;
 
 public class Pointer : MonoBehaviour {
 
-	public int MyId;
-
-	// Use this for initialization
-	void OnEnable () {
-		MyId = Managers.trajectory.id;
-	}
+	public int myId;
+	public int playerId;
 }
